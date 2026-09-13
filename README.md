@@ -149,7 +149,7 @@ environment:
 - 兼容面向图片场景的 `POST /v1/chat/completions`
 - 兼容面向图片场景的 `POST /v1/responses`
 - `GET /v1/models` 只返回稳定别名：`auto`、`gpt-5.3`、`gpt-5.4`、`gpt-5.5`、`gpt-5.6-luna`、`gpt-5.6-terra`、`gpt-5.6-sol`、`gpt-5-mini`、`gpt-5-pro`，以及账号实际支持的独立模型和图片模型
-- `gpt-5.4`、`gpt-5.5` 和三个独立的 GPT-5.6 模型可附加 `-low` / `-medium` / `-high` / `-xhigh`；这些后缀只参与后台思考强度映射，不会出现在 `/v1/models`
+- `gpt-5.4` 和三个独立的 GPT-5.6 模型可附加 `-low` / `-medium` / `-high` / `-xhigh`；这些后缀只参与后台思考强度映射，不会出现在 `/v1/models`
 - Web 内部 slug `gpt-5-6-thinking` 与通用别名 `gpt-5.6` 均不会在模型列表中展示
 - AI 修改版中，`gpt-image-2` 仅在存在非 Codex Web 账号时公开暴露；`gpt-image-2-low` / `medium` / `high` / `xhigh` 只作为隐藏后缀参与后台映射，详见 [AI_MODIFICATIONS.md](AI_MODIFICATIONS.md)
 - 管理员可在 Web 设置的「可见模型」中按需勾选、隐藏、添加或恢复默认模型列表。`visible_models: null` 时保持自动发现；保存自定义列表后只影响 `/v1/models` 的展示，不会删除账号或改变后端路由能力

@@ -28,17 +28,21 @@ class TextModelAliasTests(unittest.TestCase):
             with self.subTest(model=model):
                 self.assertEqual(resolve_text_backend_route(model), route)
 
-    def test_suffix_overrides_explicit_effort(self) -> None:
+    def test_non_thinking_gpt_55_ignores_explicit_effort(self) -> None:
+        self.assertEqual(resolve_text_backend_route("gpt-5.5"), ("gpt-5-5", ""))
+        self.assertEqual(resolve_text_backend_route("gpt-5.5", "low"), ("gpt-5-5", ""))
+        self.assertEqual(resolve_text_backend_route("gpt-5.5", "high"), ("gpt-5-5", ""))
+
+    def test_gpt_55_effort_suffix_is_not_a_supported_alias(self) -> None:
         self.assertEqual(
             resolve_text_backend_route("gpt-5.5-low", "xhigh"),
-            ("gpt-5-5-thinking", "min"),
+            ("gpt-5.5-low", "max"),
         )
 
-    def test_explicit_effort_switches_gpt_55_to_thinking_backend(self) -> None:
-        self.assertEqual(resolve_text_backend_route("gpt-5.5"), ("gpt-5-5", ""))
+    def test_hidden_gpt_55_thinking_alias_accepts_effort(self) -> None:
         self.assertEqual(
-            resolve_text_backend_route("gpt-5.5", "high"),
-            ("gpt-5-5-thinking", "extended"),
+            resolve_text_backend_route("gpt-5.5-thinking", "low"),
+            ("gpt-5-5-thinking", "min"),
         )
 
     def test_raw_models_are_preserved_but_effort_is_normalized(self) -> None:
@@ -126,7 +130,7 @@ class TextModelAliasTests(unittest.TestCase):
             result = list(conversation.stream_text_deltas(
                 SimpleNamespace(access_token="token-round-robin"),
                 ConversationRequest(
-                    model="gpt-5.5-high",
+                    model="gpt-5.5",
                     messages=[{"role": "user", "content": "hello"}],
                 ),
             ))

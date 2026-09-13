@@ -2966,8 +2966,16 @@ class OpenAIBackendAPI:
             headers=self._bootstrap_headers(),
             timeout=30,
         )
-        ensure_ok(response, "bootstrap")
-        self.pow_script_sources, self.pow_data_build = parse_pow_resources(response.text)
+        if response.status_code == 200:
+            self.pow_script_sources, self.pow_data_build = parse_pow_resources(response.text)
+        else:
+            logger.warning({
+                "event": "bootstrap_fallback",
+                "status_code": response.status_code,
+                "body": str(response.text or "")[:200],
+            })
+            self.pow_script_sources = [DEFAULT_POW_SCRIPT]
+            self.pow_data_build = ""
         if not self.pow_script_sources:
             self.pow_script_sources = [DEFAULT_POW_SCRIPT]
 

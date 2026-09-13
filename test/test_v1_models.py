@@ -445,7 +445,7 @@ class ModelListTests(unittest.TestCase):
         self.assertFalse(any("-wm" in model or "thinking" in model for model in ids))
         self.assertNotIn("gpt-5.6", ids)
 
-    def test_gpt_55_is_not_public_without_its_thinking_backend(self):
+    def test_gpt_55_is_public_without_a_thinking_backend(self):
         with (
             mock.patch.object(
                 openai_v1_models.OpenAIBackendAPI,
@@ -465,7 +465,7 @@ class ModelListTests(unittest.TestCase):
         ):
             result = openai_v1_models.list_models()
 
-        self.assertNotIn("gpt-5.5", {item["id"] for item in result["data"]})
+        self.assertIn("gpt-5.5", {item["id"] for item in result["data"]})
 
     def test_list_models_only_returns_image_models_backed_by_account_types(self):
         with (

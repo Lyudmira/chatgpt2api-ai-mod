@@ -21,7 +21,8 @@ class TextModelAlias:
 TEXT_MODEL_ALIASES = {
     "gpt-5.3": TextModelAlias("gpt-5-3"),
     "gpt-5.4": TextModelAlias("gpt-5-4-thinking", "gpt-5-4-thinking"),
-    "gpt-5.5": TextModelAlias("gpt-5-5", "gpt-5-5-thinking"),
+    "gpt-5.5": TextModelAlias("gpt-5-5"),
+    "gpt-5.5-thinking": TextModelAlias("gpt-5-5-thinking", "gpt-5-5-thinking"),
     "gpt-5.6": TextModelAlias("gpt-5-6-thinking", "gpt-5-6-thinking"),
     "gpt-5.6-luna": TextModelAlias("gpt-5.6-luna-wm", "gpt-5.6-luna-wm"),
     "gpt-5.6-terra": TextModelAlias("gpt-5.6-terra-wm", "gpt-5.6-terra-wm"),
@@ -33,7 +34,7 @@ TEXT_MODEL_ALIASES = {
 _PUBLIC_MODEL_SOURCES = {
     "gpt-5.3": ("gpt-5-3",),
     "gpt-5.4": ("gpt-5-4-thinking",),
-    "gpt-5.5": ("gpt-5-5", "gpt-5-5-thinking"),
+    "gpt-5.5": ("gpt-5-5",),
     "gpt-5.6-luna": ("gpt-5.6-luna-wm",),
     "gpt-5.6-terra": ("gpt-5.6-terra-wm",),
     "gpt-5.6-sol": ("gpt-5.6-sol-wm",),
@@ -82,7 +83,9 @@ def resolve_text_backend_route(model: object, thinking_effort: object = "") -> t
     if route is None:
         return requested_model, backend_thinking_effort(resolved_effort)
 
-    backend_model = route.thinking_model if resolved_effort and route.thinking_model else route.backend_model
+    if not route.thinking_model:
+        return route.backend_model, ""
+    backend_model = route.thinking_model if resolved_effort else route.backend_model
     return backend_model, backend_thinking_effort(resolved_effort)
 
 
